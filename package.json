@@ -6,7 +6,8 @@
   "scripts": {
     "start": "python -m http.server 8000",
     "dev": "python -m http.server 8000",
-    "build": "echo 'No build step required for static HTML'",
+    "build": "echo 'Static HTML - no build required'",
+    "vercel-build": "echo 'Vercel build completed'",
     "deploy": "echo 'Deploy to your preferred platform'"
   },
   "keywords": [
