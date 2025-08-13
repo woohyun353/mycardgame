@@ -13,32 +13,68 @@ let gameState = {
 // 카드 심볼들 (이모지 사용)
 const cardSymbols = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
 
-// DOM 요소들
-const gameBoard = document.getElementById('gameBoard');
-const timerElement = document.getElementById('timer');
-const movesElement = document.getElementById('moves');
-const scoreElement = document.getElementById('score');
-const startBtn = document.getElementById('startBtn');
-const resetBtn = document.getElementById('resetBtn');
-const gameCompleteModal = document.getElementById('gameCompleteModal');
-const finalTimeElement = document.getElementById('finalTime');
-const finalMovesElement = document.getElementById('finalMoves');
-const finalScoreElement = document.getElementById('finalScore');
-const playerNameInput = document.getElementById('playerName');
-const saveScoreBtn = document.getElementById('saveScoreBtn');
-const playAgainBtn = document.getElementById('playAgainBtn');
-const leaderboardList = document.getElementById('leaderboardList');
-const refreshLeaderboardBtn = document.getElementById('refreshLeaderboardBtn');
-const leaderboardLoading = document.getElementById('leaderboardLoading');
+// DOM 요소들 (나중에 초기화)
+let gameBoard, timerElement, movesElement, scoreElement, startBtn, resetBtn;
+let gameCompleteModal, finalTimeElement, finalMovesElement, finalScoreElement;
+let playerNameInput, saveScoreBtn, playAgainBtn, leaderboardList;
+let refreshLeaderboardBtn, leaderboardLoading;
+
+// DOM 요소 초기화
+function initDOMElements() {
+    gameBoard = document.getElementById('gameBoard');
+    timerElement = document.getElementById('timer');
+    movesElement = document.getElementById('moves');
+    scoreElement = document.getElementById('score');
+    startBtn = document.getElementById('startBtn');
+    resetBtn = document.getElementById('resetBtn');
+    gameCompleteModal = document.getElementById('gameCompleteModal');
+    finalTimeElement = document.getElementById('finalTime');
+    finalMovesElement = document.getElementById('finalMoves');
+    finalScoreElement = document.getElementById('finalScore');
+    playerNameInput = document.getElementById('playerName');
+    saveScoreBtn = document.getElementById('saveScoreBtn');
+    playAgainBtn = document.getElementById('playAgainBtn');
+    leaderboardList = document.getElementById('leaderboardList');
+    refreshLeaderboardBtn = document.getElementById('refreshLeaderboardBtn');
+    leaderboardLoading = document.getElementById('leaderboardLoading');
+    
+    // DOM 요소들이 모두 존재하는지 확인
+    const requiredElements = [
+        gameBoard, timerElement, movesElement, scoreElement, startBtn, resetBtn,
+        gameCompleteModal, finalTimeElement, finalMovesElement, finalScoreElement,
+        playerNameInput, saveScoreBtn, playAgainBtn, leaderboardList,
+        refreshLeaderboardBtn, leaderboardLoading
+    ];
+    
+    const missingElements = requiredElements.filter(el => !el);
+    if (missingElements.length > 0) {
+        console.error('Missing DOM elements:', missingElements);
+        return false;
+    }
+    
+    return true;
+}
 
 // Supabase 설정 (나중에 실제 URL과 키로 교체)
 let supabase = null;
 
 // 게임 초기화
 function initGame() {
+    // DOM 요소 초기화
+    if (!initDOMElements()) {
+        console.error('Failed to initialize DOM elements');
+        return;
+    }
+    
+    // 이벤트 리스너 설정
+    setupEventListeners();
+    
+    // 게임 초기화
     createCards();
     updateDisplay();
     loadLeaderboard();
+    
+    console.log('Game initialized successfully');
 }
 
 // 카드 생성 및 셔플
@@ -233,27 +269,35 @@ function updateDisplay() {
 
 // Supabase 초기화
 async function initSupabase() {
-    // 설정 검증
-    if (!window.gameConfig || !window.gameConfig.validateConfig()) {
-        console.error('Configuration validation failed');
-        return;
-    }
-    
-    const { config } = window.gameConfig;
-    
     try {
-        supabase = window.supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
-        
-        // 연결 테스트
-        const { data, error } = await supabase.from('scores').select('count').limit(1);
-        if (error) {
-            console.error('Supabase connection test failed:', error);
-            return;
+        // 설정 검증
+        if (!window.gameConfig || !window.gameConfig.validateConfig()) {
+            console.warn('Configuration validation failed, using fallback config');
+            // 폴백 설정 사용
+            supabase = window.supabase.createClient(
+                'https://ddqivpgngoxnzaxowhra.supabase.co',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkcWl2cGduZ294bnpheG93aHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwNTc2ODIsImV4cCI6MjA3MDYzMzY4Mn0.UtC062gAnfM2YLa8JyEM-FWER-UOn-kLaB2VYxXuyxs'
+            );
+        } else {
+            const { config } = window.gameConfig;
+            supabase = window.supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
         }
         
-        console.log('Supabase connected successfully');
+        // 연결 테스트 (선택적)
+        try {
+            const { data, error } = await supabase.from('scores').select('count').limit(1);
+            if (error) {
+                console.warn('Supabase connection test failed:', error);
+            } else {
+                console.log('Supabase connected successfully');
+            }
+        } catch (testError) {
+            console.warn('Supabase connection test failed:', testError);
+        }
+        
     } catch (error) {
         console.error('Failed to initialize Supabase:', error);
+        // Supabase 없이도 게임은 작동하도록 함
     }
 }
 
@@ -359,37 +403,45 @@ function closeModal() {
     playerNameInput.value = '';
 }
 
-// 이벤트 리스너들
-startBtn.addEventListener('click', startGame);
-resetBtn.addEventListener('click', resetGame);
-saveScoreBtn.addEventListener('click', saveScore);
-playAgainBtn.addEventListener('click', () => {
-    closeModal();
-    resetGame();
-});
-refreshLeaderboardBtn.addEventListener('click', loadLeaderboard);
-
-// 모달 외부 클릭 시 닫기
-window.addEventListener('click', (event) => {
-    if (event.target === gameCompleteModal) {
+// 이벤트 리스너 설정
+function setupEventListeners() {
+    startBtn.addEventListener('click', startGame);
+    resetBtn.addEventListener('click', resetGame);
+    saveScoreBtn.addEventListener('click', saveScore);
+    playAgainBtn.addEventListener('click', () => {
         closeModal();
-    }
-});
-
-// Enter 키로 점수 저장
-playerNameInput.addEventListener('keypress', (event) => {
-    if (event.key === 'Enter') {
-        saveScore();
-    }
-});
+        resetGame();
+    });
+    refreshLeaderboardBtn.addEventListener('click', loadLeaderboard);
+    
+    // 모달 외부 클릭 시 닫기
+    window.addEventListener('click', (event) => {
+        if (event.target === gameCompleteModal) {
+            closeModal();
+        }
+    });
+    
+    // Enter 키로 점수 저장
+    playerNameInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            saveScore();
+        }
+    });
+}
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', async () => {
-    await initSupabase();
-    initGame();
+    console.log('DOM loaded, initializing game...');
     
-    // 초기 리더보드 로드
-    setTimeout(() => {
-        loadLeaderboard();
-    }, 1000);
+    try {
+        await initSupabase();
+        initGame();
+        
+        // 초기 리더보드 로드
+        setTimeout(() => {
+            loadLeaderboard();
+        }, 1000);
+    } catch (error) {
+        console.error('Failed to initialize game:', error);
+    }
 });
