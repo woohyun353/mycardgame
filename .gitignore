@@ -51,3 +51,5 @@ node_modules/
 # Supabase 설정 파일 (보안상 제외)
 config.local.js
 supabase.config.js
+supabase-config.js
+env.local

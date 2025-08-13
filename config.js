@@ -1,8 +1,8 @@
-// 환경 변수 설정
+// Supabase 설정 (환경 변수에서 로드)
 const config = {
-    // Supabase 설정 (기본값 포함)
-    SUPABASE_URL: 'https://ddqivpgngoxnzaxowhra.supabase.co',
-    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkcWl2cGduZ294bnpheG93aHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwNTc2ODIsImV4cCI6MjA3MDYzMzY4Mn0.UtC062gAnfM2YLa8JyEM-FWER-UOn-kLaB2VYxXuyxs',
+    // Supabase 설정 (환경 변수에서 로드)
+    SUPABASE_URL: window.ENV ? window.ENV.SUPABASE_URL : '',
+    SUPABASE_ANON_KEY: window.ENV ? window.ENV.SUPABASE_ANON_KEY : '',
     
     // 게임 설정
     GAME_NAME: 'Card Flip Game',
