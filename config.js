@@ -1,12 +1,12 @@
 // 환경 변수 설정
 const config = {
-    // Supabase 설정
-    SUPABASE_URL: process.env.SUPABASE_URL || 'https://ddqivpgngoxnzaxowhra.supabase.co',
-    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkcWl2cGduZ294bnpheG93aHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwNTc2ODIsImV4cCI6MjA3MDYzMzY4Mn0.UtC062gAnfM2YLa8JyEM-FWER-UOn-kLaB2VYxXuyxs',
+    // Supabase 설정 (기본값 포함)
+    SUPABASE_URL: 'https://ddqivpgngoxnzaxowhra.supabase.co',
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkcWl2cGduZ294bnpheG93aHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwNTc2ODIsImV4cCI6MjA3MDYzMzY4Mn0.UtC062gAnfM2YLa8JyEM-FWER-UOn-kLaB2VYxXuyxs',
     
     // 게임 설정
-    GAME_NAME: process.env.GAME_NAME || 'Card Flip Game',
-    GAME_VERSION: process.env.GAME_VERSION || '1.0.0',
+    GAME_NAME: 'Card Flip Game',
+    GAME_VERSION: '1.0.0',
     
     // 개발/프로덕션 환경 구분
     IS_PRODUCTION: window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1',
