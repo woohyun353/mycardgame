@@ -6,9 +6,11 @@
   "scripts": {
     "start": "python -m http.server 8000",
     "dev": "python -m http.server 8000",
-    "build": "echo 'Static HTML - no build required'",
-    "vercel-build": "echo 'Vercel build completed'",
-    "deploy": "echo 'Deploy to your preferred platform'"
+    "build": "node build.js",
+    "vercel-build": "node build.js",
+    "deploy": "node build.js && echo 'Deploy to your preferred platform'",
+    "prebuild": "echo 'Preparing build...'",
+    "postbuild": "echo 'Build completed successfully!'"
   },
   "keywords": [
     "game",
