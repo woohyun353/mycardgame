@@ -1,0 +1,35 @@
+{
+  "name": "card-flip-game",
+  "version": "1.0.0",
+  "description": "A fun card flipping memory game with real-time scoring and leaderboard",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "build": "echo 'No build step required for static HTML'",
+    "deploy": "echo 'Deploy to your preferred platform'"
+  },
+  "keywords": [
+    "game",
+    "memory",
+    "card",
+    "flip",
+    "puzzle",
+    "html5",
+    "css3",
+    "javascript",
+    "supabase"
+  ],
+  "author": "Card Game Developer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/cardgame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/cardgame/issues"
+  },
+  "homepage": "https://yourusername.github.io/cardgame",
+  "devDependencies": {},
+  "dependencies": {}
+}
